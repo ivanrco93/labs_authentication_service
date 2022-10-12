@@ -1,6 +1,9 @@
 package devforce.labs.authentication.controller;
 
 import devforce.labs.authentication.entity.User;
+import devforce.labs.authentication.exception.DatabaseUserException;
+import devforce.labs.authentication.exception.InvalidUserException;
+import devforce.labs.authentication.exception.UserNotFoundException;
 import devforce.labs.authentication.service.IUserService;
 import devforce.labs.authentication.swagger.UserControllerSwagger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,38 +22,48 @@ public class UserController implements UserControllerSwagger {
     @Override
     @GetMapping
     public ResponseEntity<Object> retrieveAllUsers() {
-        return ResponseEntity.ok(userService.searchAll());
+        return ResponseEntity.ok(userService.retrieveUsers());
+    }
+
+    @Override
+    @GetMapping("/search/filter")
+    public ResponseEntity<Object> retrieveFilteredUsers(
+            //@ModelAttribute("search") User user,
+            @RequestBody User user,
+            HttpServletRequest httpServletRequest
+    ) {
+        return ResponseEntity.ok(userService.retrieveUsers(user));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<Object> retrieveUserById(
-            String id,
+            @PathVariable Integer id,
             HttpServletRequest httpServletRequest
     ) {
-        return ResponseEntity.ok(userService.searchAll());
+        return ResponseEntity.ok(userService.retrieveUserById(id));
     }
 
     @Override
     @GetMapping("/uuid/{uuid}")
     public ResponseEntity<Object> retrieveUserByUUID(
-            @PathVariable String UUID,
+            @PathVariable String uuid,
             HttpServletRequest httpServletRequest
-    ) {
-        return ResponseEntity.ok(userService.searchByUUID(UUID));
+    ) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.retrieveUserByUUID(uuid));
     }
 
     @Override
     @PostMapping
     public ResponseEntity<Object> createUser(
             @RequestBody User user,
-            HttpServletRequest httpServletRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+            HttpServletRequest httpServletRequest) throws DatabaseUserException, InvalidUserException, UserNotFoundException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 
     @Override
     @PutMapping
     public ResponseEntity<Object> updateUser(User user, HttpServletRequest httpServletRequest) {
-        return ResponseEntity.ok(userService.save(user));
+        return ResponseEntity.ok(userService.updateUser(user));
     }
 }

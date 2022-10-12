@@ -1,14 +1,21 @@
 package devforce.labs.authentication.service;
 
 import devforce.labs.authentication.entity.User;
+import devforce.labs.authentication.exception.DatabaseUserException;
+import devforce.labs.authentication.exception.InvalidUserException;
+import devforce.labs.authentication.exception.UserNotFoundException;
 
 import java.util.List;
 
 public interface IUserService {
-    List<User> searchAll();
-    User searchById(int id);
-    User searchByUUID(String UUID);
-    User searchByEmailAndPassword(String email, String password);
-    User save(User user);
-    void delete(int userId);
+    List<User> retrieveUsers();
+
+    List<User> retrieveUsers(User user);
+    User retrieveUserById(Integer id);
+    User retrieveUserByUUID(String UUID) throws UserNotFoundException;
+    User retrieveUserByEmailAndPassword(String email, String password) throws UserNotFoundException;
+    User createUser(User user) throws InvalidUserException, DatabaseUserException, UserNotFoundException;
+
+    User updateUser(User user);
+    boolean deleteUser(int userId);
 }

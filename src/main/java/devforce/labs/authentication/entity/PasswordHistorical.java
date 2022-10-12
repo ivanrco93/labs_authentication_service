@@ -15,7 +15,7 @@ import java.util.Date;
 public class PasswordHistorical {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @OneToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;

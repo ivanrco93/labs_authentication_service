@@ -15,12 +15,12 @@ import java.util.Date;
 public class PasswordRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String requestId;
     @OneToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
-    private int status;
+    private Integer status;
     @Column(nullable=false, name = "created_at")
     private Date createdAt;
     @Column(nullable=false, name = "updated_at")
