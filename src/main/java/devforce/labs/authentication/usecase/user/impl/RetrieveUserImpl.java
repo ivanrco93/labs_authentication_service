@@ -55,31 +55,7 @@ public class RetrieveUserImpl implements RetrieveUser {
     }
 
     @Override
-    public List<User> retrieveAllUsers(User user) {
-        List<Query> query = new ArrayList<Query>();
-        Query q = new Query();
-        q.setField("firstName");
-        q.setValue("Ivan");
-        q.setType("select");
-        q.setWhereType(WhereType.AND);
-
-
-        Query q2 = new Query();
-        q2.setField("firstLastName");
-        q2.setValue("Martinez");
-        q2.setType("select");
-        q2.setWhereType(WhereType.OR);
-
-        Query q3 = new Query();
-        q3.setField("status");
-        q3.setValue("false");
-        q3.setType("select");
-        q3.setWhereType(WhereType.OR);
-
-        query.add(q);
-        query.add(q2);
-        query.add(q3);
-
+    public List<User> retrieveAllUsers(List<Query> query) {
         return castObjectToUser(this.exampleCustomizedMatcher.findAllByFilters(query, User.class));
     }
 

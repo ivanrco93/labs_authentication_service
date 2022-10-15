@@ -23,34 +23,21 @@ public class CustomizedExampleMatcherImpl<T> implements CustomizedExampleMatcher
     @Override
     public List<Object> findAllByFilters(List<Query> query, Class<T> entityClass) {
         this.entityClass = entityClass;
-        System.out.println("Step 1");
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        System.out.println("Step 2");
         CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery(Object.class);
-        System.out.println("Step 3");
         Root<T> itemRoot = criteriaQuery.from(this.entityClass);
-        System.out.println("Step 4");
         List<Predicate> predicates = new ArrayList<>();
 
-        System.out.println("Checking query");
         for(Query q: query){
             predicates.add(getPredicate(q, itemRoot, criteriaBuilder));
         }
-        System.out.println("End checking query");
 
-        Predicate finalPredicate
-                = criteriaBuilder
-                .or(
-                        this.getPredicatesByWhereType(criteriaBuilder, query, predicates, WhereType.AND),
-                        this.getPredicatesByWhereType(criteriaBuilder, query, predicates, WhereType.OR));
+        Predicate finalPredicate = criteriaBuilder.or(
+            criteriaBuilder.and(this.getPredicatesByWhereType(criteriaBuilder, query, predicates, WhereType.AND)),
+            criteriaBuilder.or(this.getPredicatesByWhereType(criteriaBuilder, query, predicates, WhereType.OR))
+        );
 
-        //criteriaQuery.select(itemRoot).where(predicates.toArray(new Predicate[]{}));
         criteriaQuery.select(itemRoot).where(finalPredicate);
-
-
-        /*criteriaQuery.select(itemRoot).where(criteriaBuilder.disjunction(predicates.get(0)));
-        criteriaQuery.select(itemRoot).where(criteriaBuilder.or(predicates.get(1)));
-        criteriaQuery.select(itemRoot).where(criteriaBuilder.or(predicates.get(2)));*/
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
@@ -59,18 +46,17 @@ public class CustomizedExampleMatcherImpl<T> implements CustomizedExampleMatcher
          Class<?> clazz = this.entityClass;
          clazz.getDeclaredFields();
          for(Field field : clazz.getDeclaredFields()) {
-             //you can also use .toGenericString() instead of .getName(). This will
-             //give you the type information as well.
-             //System.out.println("checking field Name: ");
-             //System.out.println(field.getName());
-             //System.out.println(field.getType());
              if(field.getName().equals(fieldName)){
                  return field.getType().toString();
              }
          }
          return null;
     }
-    Predicate getPredicatesByWhereType(CriteriaBuilder cb, List<Query> query, List<Predicate> predicateList, WhereType w){
+    Predicate[] getPredicatesByWhereType(
+            CriteriaBuilder cb,
+            List<Query> query,
+            List<Predicate> predicateList,
+            WhereType w){
         List<Predicate> predicates = new ArrayList<>();
         int i = 0;
         for(Predicate p: predicateList){
@@ -79,7 +65,7 @@ public class CustomizedExampleMatcherImpl<T> implements CustomizedExampleMatcher
             }
             i++;
         }
-        return cb.and(predicates.toArray(new Predicate[]{}));
+        return predicates.toArray(new Predicate[]{});
     }
     Predicate getPredicate(Query q, Root<T> ir, CriteriaBuilder cb){
         Predicate p = null;

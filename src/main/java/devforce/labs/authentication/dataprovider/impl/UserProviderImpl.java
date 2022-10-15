@@ -51,6 +51,21 @@ public class UserProviderImpl implements UserProvider {
     }
 
     @Override
+    public User retrieveUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public User retrieveUserByIdentification(String identification) {
+        return userRepository.findByIdentification(identification);
+    }
+
+    @Override
+    public User retrieveUserByCode(String code) {
+        return userRepository.findByCode(code);
+    }
+
+    @Override
     public User saveUser(User user) throws DatabaseUserException, UserNotFoundException {
         try {
             userRepository.save(user);

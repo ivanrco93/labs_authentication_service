@@ -5,6 +5,7 @@ import devforce.labs.authentication.entity.User;
 import devforce.labs.authentication.exception.DatabaseUserException;
 import devforce.labs.authentication.exception.InvalidUserException;
 import devforce.labs.authentication.exception.UserNotFoundException;
+import devforce.labs.authentication.query.entity.Query;
 import devforce.labs.authentication.repository.UserRepository;
 import devforce.labs.authentication.service.IUserService;
 import devforce.labs.authentication.usecase.user.CreateUser;
@@ -24,15 +25,17 @@ public class UserService implements IUserService {
 
     @Autowired
     private RetrieveUser retrieveUser;
+
     @Override
     public List<User> retrieveUsers() {
         return retrieveUser.retrieveAllUsers();
     }
 
     @Override
-    public List<User> retrieveUsers(User user)  {
-        return retrieveUser.retrieveAllUsers(user);
+    public List<User> retrieveUsers(List<Query> query) {
+        return retrieveUser.retrieveAllUsers(query);
     }
+
 
     @Override
     public User retrieveUserById(Integer id) {

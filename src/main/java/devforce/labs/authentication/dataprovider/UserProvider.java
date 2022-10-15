@@ -14,6 +14,11 @@ public interface UserProvider {
     User retrieveUserByUUId(String uuid) throws UserNotFoundException;
 
     User retrieveUserByEmailAndPassword(String email, String password) throws UserNotFoundException;
+    User retrieveUserByEmail(String email);
+
+    User retrieveUserByIdentification(String identification);
+    User retrieveUserByCode(String code);
+
     User saveUser(User user) throws DatabaseUserException, UserNotFoundException;
 
     Boolean deleteUser(Integer id);

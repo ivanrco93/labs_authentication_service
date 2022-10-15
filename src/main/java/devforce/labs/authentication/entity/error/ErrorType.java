@@ -1,5 +1,5 @@
 package devforce.labs.authentication.entity.error;
 
 public enum ErrorType {
-    GRAL_ERROR
+    GRAL_ERROR, ENTITY_VALIDATION_ERROR
 }

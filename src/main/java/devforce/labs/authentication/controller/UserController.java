@@ -4,14 +4,19 @@ import devforce.labs.authentication.entity.User;
 import devforce.labs.authentication.exception.DatabaseUserException;
 import devforce.labs.authentication.exception.InvalidUserException;
 import devforce.labs.authentication.exception.UserNotFoundException;
+import devforce.labs.authentication.query.entity.Query;
 import devforce.labs.authentication.service.IUserService;
 import devforce.labs.authentication.swagger.UserControllerSwagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/authentication-api/v1/users")
@@ -28,11 +33,10 @@ public class UserController implements UserControllerSwagger {
     @Override
     @GetMapping("/search/filter")
     public ResponseEntity<Object> retrieveFilteredUsers(
-            //@ModelAttribute("search") User user,
-            @RequestBody User user,
+            @RequestBody List<Query> query,
             HttpServletRequest httpServletRequest
     ) {
-        return ResponseEntity.ok(userService.retrieveUsers(user));
+        return ResponseEntity.ok(userService.retrieveUsers(query));
     }
 
     @Override
@@ -56,14 +60,18 @@ public class UserController implements UserControllerSwagger {
     @Override
     @PostMapping
     public ResponseEntity<Object> createUser(
-            @RequestBody User user,
-            HttpServletRequest httpServletRequest) throws DatabaseUserException, InvalidUserException, UserNotFoundException {
+            @Valid @RequestBody User user,
+            HttpServletRequest httpServletRequest,
+            BindingResult bindingResult) throws DatabaseUserException, InvalidUserException, UserNotFoundException {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 
     @Override
     @PutMapping
-    public ResponseEntity<Object> updateUser(User user, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Object> updateUser(
+            User user,
+            HttpServletRequest httpServletRequest,
+            BindingResult bindingResult) {
         return ResponseEntity.ok(userService.updateUser(user));
     }
 }

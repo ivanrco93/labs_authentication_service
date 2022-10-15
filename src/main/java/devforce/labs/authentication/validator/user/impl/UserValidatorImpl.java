@@ -14,20 +14,9 @@ import java.text.MessageFormat;
 @Service
 @PropertySource("classpath:configuration.properties")
 public class UserValidatorImpl implements UserValidator {
-    private final int firstNameMaxLength;
-
-    @Autowired
-    public UserValidatorImpl(
-            @Value("${user.firstname.max.length}") int firstNameMaxLength
-    ) {
-        this.firstNameMaxLength = firstNameMaxLength;
-    }
 
     @Override
     public void validateUser(User user) throws InvalidUserException {
-        int firstNameLength = StringUtils.length(user.getFirstName());
-        if(firstNameLength > firstNameMaxLength){
-            throw new InvalidUserException(MessageFormat.format("Provided firstname length [{0}] is greater than allowed [{1}]", firstNameLength, firstNameMaxLength));
-        }
+        //throw new InvalidUserException(MessageFormat.format("Provided firstname length [{0}] is greater than allowed [{1}]", firstNameLength, firstNameMaxLength));
     }
 }
